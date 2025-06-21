@@ -40,7 +40,7 @@ jobs:
           name: binutils-gdb-gcc-linux
           path: binutils-gdb-gcc-linux.tar
 
-  macos:
+  macosX64:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
@@ -59,7 +59,33 @@ jobs:
       - run: ci/clean-up.sh
       - run: ci/bundle-macos.sh
       - run: ci/archive-macos.sh
+      - run: mv binutils-gdb-gcc-macos.tar binutils-gdb-gcc-macos-x64.tar
       - uses: actions/upload-artifact@v4
         with:
-          name: binutils-gdb-gcc-macos
-          path: binutils-gdb-gcc-macos.tar
+          name: binutils-gdb-gcc-macos-x64
+          path: binutils-gdb-gcc-macos-x64.tar
+
+  macosARM64:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v3
+      - run: ci/install-packages-macos.sh
+      - run: ci/binutils-gdb/clone.sh
+      - run: ci/binutils-gdb/download-prerequisites.sh
+      - run: ci/binutils-gdb/configure-macos.sh
+      - run: ci/binutils-gdb/build-macos.sh
+      - run: ci/gcc/download.sh
+      - run: ci/gcc/patch.sh
+      - run: ci/gcc/download-prerequisites.sh
+      - run: ci/gcc/configure-macos.sh
+      - run: ci/gcc/build.sh
+      - run: ci/binutils-gdb/install.sh
+      - run: ci/gcc/install.sh
+      - run: ci/clean-up.sh
+      - run: ci/bundle-macos.sh
+      - run: ci/archive-macos.sh
+      - run: mv binutils-gdb-gcc-macos.tar binutils-gdb-gcc-macos-arm64.tar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binutils-gdb-gcc-macos-arm64
+          path: binutils-gdb-gcc-macos-arm64.tar
